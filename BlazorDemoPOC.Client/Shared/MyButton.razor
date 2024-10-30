@@ -1,5 +1,11 @@
-﻿<button>Button</button>
+﻿<button @onclick="handleButtonClicked">Button</button>
+<h1>@text</h1>
 
 @code {
+    string text = "";
 
+    void handleButtonClicked()
+    {
+        text = "Button Clicked";
+    }
 }
