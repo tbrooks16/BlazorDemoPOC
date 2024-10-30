@@ -1,8 +1,30 @@
 ﻿@page "/"
+@using BlazorDemoPOC.Data
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+@implements IAsyncDisposable
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
 <MyButton @rendermode="InteractiveWebAssembly"/>
+<h1>Hello, world!</h1>
+@foreach(var test in tests)
+{
+    <p>@test.Username</p>
+}
 
-Welcome to your new app.
+@code{
+    #nullable disable
+    private ApplicationDbContext context = default!;
+    private List<Models.Test> tests = [];
+
+    public async ValueTask DisposeAsync(){
+        await context.DisposeAsync();
+    }
+
+    protected override void OnInitialized(){
+        context = DbFactory.CreateDbContext();
+        tests = context.Test.ToList();
+
+    }
+}
