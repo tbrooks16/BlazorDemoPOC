@@ -2,6 +2,7 @@ using BlazorDemoPOC.Client.Shared;
 using BlazorDemoPOC.Components;
 using BlazorDemoPOC.Data;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,7 @@ builder.Services.AddRazorComponents().AddInteractiveServerComponents().AddIntera
 
 var connectionString = builder.Configuration.GetConnectionString("database") ?? throw new InvalidOperationException("Connection string 'database' not found");
 builder.Services.AddDbContextFactory<ApplicationDbContext>(options => options.UseSqlServer(connectionString), ServiceLifetime.Scoped);
+builder.Services.AddMudServices();
 
 var app = builder.Build();
 
