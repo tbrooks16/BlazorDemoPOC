@@ -1,0 +1,7 @@
+<div class="@className" id="card-header">
+    @ChildContent
+</div>
+@code {
+    [Parameter] public string? className { get; set; } = "";
+    [Parameter, EditorRequired] public RenderFragment? ChildContent { get; set; }
+}
