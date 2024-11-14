@@ -1,11 +1,9 @@
-﻿<button @onclick="handleButtonClicked">Button</button>
-<h1>@text</h1>
-
+﻿<button class="bg-sky-400 p-2 rounded-md hover:bg-sky-500 @className" @onclick="clickCallback">
+    Click Me!
+</button>
 @code {
-    string text = "";
-
-    void handleButtonClicked()
-    {
-        text = "Button Clicked";
-    }
+    [Parameter] public EventCallback clickCallback { get; set; }
+    [Parameter] public string? className { get; set; } = "";
+    @* [Parameter, EditorRequired]
+    public RenderFragment? ChildContent { get; set; } *@
 }

@@ -1,0 +1,23 @@
+@page "/forms"
+
+<MudPaper>
+    <MudForm @ref="form"></MudForm>
+    <MudTextField T="string" Label="Id" Disabled="true" />
+    <MudTextField T="string" Label="Username" />
+    <MudTextField T="DateTime" Label="Submission Date" Disabled="true" />
+    <MudSelect T="string" Label="Roles" MultiSelection="true" @bind-SelectedValues="selectedRoles">
+        @foreach(var role in roles){
+            <MudSelectItem T="string" Value="@role">@role</MudSelectItem>
+        }
+    </MudSelect>
+</MudPaper>
+<MudPopoverProvider />
+
+@code {
+    private string[] roles = ["user", "admin", "dev", "qa", "tester"];
+    private IEnumerable<string> selectedRoles {get; set;} = new HashSet<string>();
+    bool success;
+    string[] errors = { };
+    MudTextField<string> pwField1;
+    MudForm form;
+}
