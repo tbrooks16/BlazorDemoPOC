@@ -6,8 +6,6 @@
 
 main {
     flex: 1;
-    background-color: rgba(9,9,11);
-    color: white;
 }
 
 .sidebar {

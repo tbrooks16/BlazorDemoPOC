@@ -17,6 +17,23 @@
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
             </NavLink>
         </div>
+       <MyButton className="w-full" @onclick="test" @rendermode="InteractiveWebAssembly"/>
+       <MudSwitch @onclick="() => SwitchClicked(_isDarkMode)" @rendermode="InteractiveWebAssembly" @bind-Value="_isDarkMode" Color="Color.Primary" Class="bg-transparent" T="bool" Label="Toggle Light/Dark Mode" StopClickPropagation="false"/>
+
     </nav>
 </div>
 
+@* TODO Figure out why methods aren't firing when buttons are clicked. *@
+@code{
+    [Parameter, EditorRequired] public bool _isDarkMode {get; set;}
+    [Parameter, EditorRequired] public EventCallback<bool> OnSwitchClicked {get; set;}
+
+    public void SwitchClicked(bool newValue){
+        OnSwitchClicked.InvokeAsync(newValue);
+    }
+
+    public void test()
+    {
+        System.Diagnostics.Debug.WriteLine("Got here");
+    }
+}

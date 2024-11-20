@@ -1,9 +1,15 @@
-﻿<button class="bg-sky-400 p-2 rounded-md hover:bg-sky-500 @className" @onclick="clickCallback">
-    Click Me!
+﻿<button class="bg-sky-400 p-2 rounded-md hover:bg-sky-600 focus-visible:bg-sky-500 @className" type="@type" @attributes="AdditionalAttributes">
+    @text
 </button>
+
 @code {
+    [Parameter] public string type {get; set;} = "button";
+    [Parameter] public string text {get; set;} = "Click Me!";
     [Parameter] public EventCallback clickCallback { get; set; }
     [Parameter] public string? className { get; set; } = "";
-    @* [Parameter, EditorRequired]
-    public RenderFragment? ChildContent { get; set; } *@
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object> AdditionalAttributes { get; set; }
+    public void wasClicked()
+    {
+        text = "New text";
+    }
 }

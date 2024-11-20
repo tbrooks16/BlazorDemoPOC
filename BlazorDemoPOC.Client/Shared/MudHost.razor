@@ -1,0 +1,9 @@
+
+<section>@ChildContent</section>
+<h3 style="width: fit-content;" class="text-black dark:text-white ms-auto me-auto">Component @(OperatingSystem.IsBrowser() ? "WASM Rendered" : "Server Rendered")</h3>
+
+
+@code{
+    [Parameter, EditorRequired] public RenderFragment? ChildContent { get; set; }
+
+}
