@@ -1,23 +1,38 @@
 @page "/forms"
+@using BlazorDemoPOC.Models
+@inject IPersonRepository personRepository
 
-<MudPaper>
-    <MudForm @ref="form"></MudForm>
-    <MudTextField T="string" Label="Id" Disabled="true" />
-    <MudTextField T="string" Label="Username" />
-    <MudTextField T="DateTime" Label="Submission Date" Disabled="true" />
-    <MudSelect T="string" Label="Roles" MultiSelection="true" @bind-SelectedValues="selectedRoles">
-        @foreach(var role in roles){
-            <MudSelectItem T="string" Value="@role">@role</MudSelectItem>
-        }
-    </MudSelect>
-</MudPaper>
-<MudPopoverProvider />
+<h1 class="text-3xl font-bold">MudBlazor Form</h1>
+<p class="my-4">This is an example of a client-side (WASM) form with both client and server-side validation using MudBlazor's form component and Blazor's EditForm component.</p>
+<p class="my-4">
+    Each form has automatic validaton on all fields except phone number. 
+    Phone number has a custom validation schema on it. I am using a regex to validate but there are many other ways to do validation on an entry.
+</p>
+
+<p class="my-4">Links</p>
+<a class="block hover:underline text-blue-400 w-fit my-2" target="_blank" href="https://mudblazor.com/components/form#editform-support">MudBlazor Form Component</a>
+<a class="block hover:underline text-blue-400 w-fit my-2" target="_blank" href="https://learn.microsoft.com/en-us/aspnet/core/blazor/forms/?view=aspnetcore-3.1">Blazor Form </a>
+
+<Form @rendermode="new InteractiveWebAssemblyRenderMode(prerender: false)" OnSubmit="createPerson"/> @* Need to disable prerendering when injecting services.*@
+
+@* @foreach(var person in people){
+    <span>@person.Username</span>
+    <span>@person.PhoneNumber</span>
+    <br/>
+} *@
 
 @code {
-    private string[] roles = ["user", "admin", "dev", "qa", "tester"];
-    private IEnumerable<string> selectedRoles {get; set;} = new HashSet<string>();
-    bool success;
-    string[] errors = { };
-    MudTextField<string> pwField1;
-    MudForm form;
+    protected override async Task OnInitializedAsync(){
+       await getPeople();
+    }
+    List<Person> people = new();
+    async Task getPeople()
+    {
+        var persons = await personRepository.GetAllPeople();
+        people = persons;
+    }
+
+    async Task createPerson(Person person){
+        await personRepository.CreatePerson(person);
+    }
 }

@@ -1,0 +1,109 @@
+@using System.ComponentModel.DataAnnotations
+@using BlazorDemoPOC.Models
+@using System.ComponentModel
+@* @using BlazorDemoPOC.Client.Validators *@
+@inject ClientPersonService service
+
+<MudPopoverProvider />
+
+@* Needed for dialogs *@
+<MudDialogProvider />
+
+@* Needed for snackbars *@
+<MudSnackbarProvider />
+
+<h2 class="my-6 font-semibold">Edit Form</h2>
+<EditForm Model="@editModel" OnValidSubmit="handleEditFormSubmitted">
+    <DataAnnotationsValidator/>
+    <MudTextField class="my-2 bg-[var(--theme-background)]" T="string" Label="First Name" Required="true" @bind-Value="editModel.FirstName" For="@(() => editModel.FirstName)"/>
+    <MudTextField class="my-2 bg-[var(--theme-background)]" T="string" Label="Last Name" Required="true" @bind-Value="editModel.LastName" For="@(() => editModel.LastName)"/>
+    <MudTextField class="my-2 bg-[var(--theme-background)]" T="string" Label="Username" Required="true" @bind-Value="editModel.Username" For="@(() => editModel.Username)"/>
+    <MudTextField class="my-2 bg-[var(--theme-background)]" T="string" Label="Phone Number" Required="true" @bind-Value="editModel.PhoneNumber" For="@(() => editModel.PhoneNumber)"/>
+    <MudSelect class="my-2 bg-[var(--theme-background)]" T="string" Label="Roles" MultiSelection="true"  @bind-SelectedValues="selectedRoles" Required="true" RequiredError="Please select at least one role.">
+        @foreach(var role in roles){
+            <MudSelectItem T="string" Value="@role">@role</MudSelectItem>
+        }
+    </MudSelect>
+    <MyButton disabled="@(editSubmitted)" type="submit" className="disabled:bg-gray-500 disabled:cursor-not-allowed disabled:text-black w-full" text="@editFormText" />
+    <MudText Color="Color.Error">
+        <ValidationSummary />
+    </MudText>
+</EditForm >
+
+<h2 class="my-6 font-semibold">MudBlazor Form</h2>
+
+<MudForm @ref="form" Model="mudModel" @bind-IsValid="@success" @bind-Errors="@errors">
+    <MudTextField @bind-Value="mudModel.FirstName" class="my-2 bg-[var(--theme-background)]" T="string" Label="First Name" Required="true" RequiredError="First name is required"/>
+    <MudTextField @bind-Value="mudModel.LastName" class="my-2 bg-[var(--theme-background)]" T="string" Label="Last Name" Required="true" RequiredError="Last name is required" />
+    <MudTextField @bind-Value="mudModel.Username" class="my-2 bg-[var(--theme-background)]" T="string" Label="Username" Required="true" RequiredError="Username is required" />
+    <MudTextField @bind-Value="mudModel.PhoneNumber" class="my-2 bg-[var(--theme-background)]" T="string" Label="Phone Number" Required="true" RequiredError="Phone Number is required" For="@(() => mudModel.PhoneNumber)" /> @*For is to apply validation*@
+    <MyButton className="disabled:bg-gray-500 disabled:cursor-not-allowed disabled:text-black" disabled="@(mudSubmitted || !success)" text="Submit MudBlazor Form" @onclick="handleMudFormSubmitted"/>
+</MudForm>
+
+<p class="text-yellow-500 my-4">@mudFormText</p>
+
+@foreach(var error in errors){
+    <span class="text-red-600">@error, </span>
+}   
+
+<div>
+    Roles: 
+    @foreach(var role in selectedRoles){
+        <span class="my-4">@role,</span>
+    }
+</div>
+
+
+@code {
+    [Parameter] public EventCallback<Person> OnSubmit {get; set;} // If parent component wants to do something after submitting. Parent must be in a reactive render mode.
+    public Person editModel = new Person();
+    public Person mudModel = new Person();
+    private string[] roles = ["user", "admin", "dev", "qa", "tester"];
+    private IEnumerable<string> selectedRoles {get; set;} = new HashSet<string>();
+    bool success = false;
+    string[] errors = { };
+    MudForm form;
+    string editFormText = "Submit EditForm";
+    string mudFormText = "Mud Blazor Before";
+    bool editSubmitted = false;
+    bool mudSubmitted = false;
+
+    public async Task handleEditFormSubmitted(){
+        editFormText = "Submitted";
+        editSubmitted = true;
+        string roles = string.Join(",", selectedRoles.ToArray());
+        editModel.Roles = roles;
+        Console.WriteLine($"Roles: {editModel.Roles}");
+        try{
+            @* await OnSubmit.InvokeAsync(model); *@
+            await service.PostPerson(editModel); 
+        }catch(Exception ex){
+            Console.WriteLine(ex);
+            System.Diagnostics.Debug.WriteLine(ex);
+        }
+    }
+
+    public async Task handleMudFormSubmitted()
+    {
+        mudSubmitted = true;
+        mudFormText = "Mud Blazor After";
+        foreach(PropertyDescriptor descriptor in TypeDescriptor.GetProperties(mudModel))
+        {
+            string name = descriptor.Name;
+            object? value = descriptor.GetValue(editModel);
+            Console.WriteLine("{0}={1}", name, value);
+        }
+        Console.WriteLine(form.Model?.ToString());
+
+        try
+        {
+            @* await OnSubmit.InvokeAsync(model); *@
+            await service.PostPerson(mudModel);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            System.Diagnostics.Debug.WriteLine(ex);
+        }
+    }
+}
