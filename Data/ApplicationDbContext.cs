@@ -8,5 +8,6 @@ namespace BlazorDemoPOC.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         public DbSet<Test> Test { get; set; }
+        public DbSet<Person> Person {get; set;}
     }
 }
