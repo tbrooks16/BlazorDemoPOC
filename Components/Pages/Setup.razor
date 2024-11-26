@@ -1,1 +1,76 @@
 @page "/setup"
+
+<h1 class="text-4xl font-bold my-4">What is Blazor and how do I set it up?</h1>
+
+<h2 id="what-is-blazor" class="text-2xl hover:underline"><a href="/setup/#what-is-blazor">What is Blazor</a></h2>
+<p class="my-4">
+    Blazor is a framework created by Microsoft that is able to tackle many different solutions. 
+    You can use Blazor in many different environments including but not limited to, the web, mobile, and desktop applications.
+    One of the most intriguing bits about Blazor is it's ability to work on different platforms and it's familiarity for C# & .NET developers. 
+</p>
+<p class="my-4">
+    Blazor for the web is designed to stack up against other web frameworks and SPA's. Pre .NET 8, Blazor was either a SPA or a Server based app. 
+    You couldn't interop between them. Now in .NET 8 and beyond you can. There are a lot of caveats (explained in 
+    <a class="hover:underline text-blue-400 w-fit my-2" href="rendermodes">Rendermodes</a>) but it works well and even allows for JS interop. 
+    So you can add React, Angular or whatever js framework you want into your Blazor App.
+</p>
+<h2 id="set-up" class="text-2xl hover:underline"><a href="/setup/#set-up">How to set up a Blazor Web App</a></h2>
+
+<p class="my-4">
+    Setting up a Blazor web app is fairly simple. Create a new Blazor Web App. You get an app with a component demonstrating streaming. 
+    By default the app will be SSR. It is up to you to add Interactive Render Modes. Below are links to commits in the repo that give in depth descriptions of how to add additional features to the app.
+</p>
+<ul class="my-4">
+    <li class="list-disc my-2">
+        <a class="hover:underline text-blue-400 w-fit my-2" href="https://nyssc.svc.ny.gov/gitlabcto/entapps/POC/blazorsetuppoc/-/commit/b3f2de665869a5c08dd53f26f8ae7ba2b4b70da5" target="_blank">
+            Add Render Modes and Client Project
+        </a>
+        <ul class="my-2 mx-4">
+            <li class="list-disc my-2">
+                Here we create a new Blazor Web App in the same solution and call it {ProjectName}.Client. This is necessary to render WebAssembly components. Without it, it will not work.
+                To add interactive render mode capability, we need to add the interactiveServerComponents and interactiveWebAssemblyComponents services to the program.cs. 
+                This will package the app in a way that will allow dynamic rendering of interactive components.
+                It is important to remember to include 
+                <a class="hover:underline text-blue-400 w-fit my-2" href="https://nyssc.svc.ny.gov/gitlabcto/entapps/POC/blazorsetuppoc/-/commit/b3f2de665869a5c08dd53f26f8ae7ba2b4b70da5#1595e9a250ff95aa8621fbd0083b2a19287dac41_24_24" target="_blank">line 24</a>
+                in program.cs. This actually registers the services to your app. 
+                AddAdditionalAssemblies takes in an assembly of a component in the Web Assembly component. 
+                It is recommended to use the _Imports assembly but I had some problems having the app recognize it. So for now I'm using a custom Button component.  
+            </li>
+            <li class="list-disc list-outside">
+                <a class="hover:underline text-blue-400 w-fit my-2" href="https://nyssc.svc.ny.gov/gitlabcto/entapps/POC/blazorsetuppoc/-/commit/f574a08d6fdbc38a3d53321d739fddcd297ce294" target="_blank">If your app has build errors.</a>
+                <ul class="my-2 mx-4">
+                    <li class="list-disc my-2">
+                        After creating the client project I noticed my solution had duplicate folders/files. This may be something that only happens to me but removing the duplicates fixed the problems.
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li class="list-disc my-2">
+        <a class="hover:underline text-blue-400 w-fit my-2" href="https://nyssc.svc.ny.gov/gitlabcto/entapps/POC/blazorsetuppoc/-/commit/2bea6aa042cc3f9bf531e8194dcce30d180cfe62" target="_blank">
+            Add Database Capability
+        </a>
+        <ul class="my-2 mx-4">
+            <li class="list-disc my-2">
+                Here I do my version of a database first approach where I create the tables and then have the app read the tables. 
+                <i>Create database by right clicking connected services in project and adding sql server database. You'll want to have already previously made the database using this method. There are other code first/db first solutions.</i>
+                You can ignore all the context stuff I set up 
+                <a class="hover:underline text-blue-400 w-fit my-2" href="https://nyssc.svc.ny.gov/gitlabcto/entapps/POC/blazorsetuppoc/-/commit/e48a3022a6b1a834361bf5fac77a236afaa17bdc">here.</a> 
+                I am using a repository method now that uses DI.
+            </li>
+        </ul>
+    </li>
+    <li class="list-disc my-2">
+        <a class="hover:underline text-blue-400 w-fit my-2" href="https://nyssc.svc.ny.gov/gitlabcto/entapps/POC/blazorsetuppoc/-/commit/32669710f18ed37425a5d51e4c45da6743a60b08" target="_blank">
+            Add API project capability
+        </a>
+        <ul class="my-2 mx-4">
+            <li class="list-disc my-2">
+                WebAssembly rendered components need an API to interact with to submit and retrieve data. They don't have access to the server so they can't make direct requests.
+                I haven't figured out how to create shared references properly so for now all the shared references exist in the client project.
+                In the <a class="hover:underline text-blue-400 w-fit my-2" href="https://nyssc.svc.ny.gov/gitlabcto/entapps/POC/blazorsetuppoc/-/commit/32669710f18ed37425a5d51e4c45da6743a60b08#1595e9a250ff95aa8621fbd0083b2a19287dac41">program.cs</a>
+                we initialize the api and register our endpoints for the server to listen to. The endpoints are loosely protected and would require some proper authorization in order for it to be secure.
+            </li>
+        </ul>
+    </li>
+</ul>
