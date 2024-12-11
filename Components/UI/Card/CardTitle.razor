@@ -1,7 +1,8 @@
-<div class="@className" id="card-title">
+<div class="text-lg font-bold @className" @attributes="AdditionalAttributes">
     @ChildContent
 </div>
 @code {
     [Parameter] public string? className { get; set; } = "";
     [Parameter, EditorRequired] public RenderFragment? ChildContent { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
 }

@@ -1,29 +1,39 @@
-﻿<div class="w-fit mx-auto p-2">
+﻿@using BlazorDemoPOC.Models
+
+<div class="w-fit mx-auto p-2">
     <a class="text-white font-bold text-2xl" href="">BlazorDemoPOC</a>
 </div>
 
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link p-2" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+    <nav class="flex-column p-2 gap-x-10">
+        <div class="hover:bg-gray-500 hover:bg-opacity-20 p-2 hover:font-extrabold">
+            <NavLink class="w-full block" href="" Match="NavLinkMatch.All">
+                Home
             </NavLink>
         </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link p-2" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+        <div class="hover:bg-gray-500 hover:bg-opacity-20 p-2 hover:font-extrabold">
+            <NavLink class="w-full block" href="weather">
+                Weather
             </NavLink>
         </div>
+
+        @foreach(var topic in Topics){
+            <div class="hover:bg-gray-500 hover:bg-opacity-20 p-2 hover:font-extrabold">
+                <NavLink class="w-full block" href="@topic.Url">
+                    @topic.Description
+                </NavLink>
+            </div>
+        }
     </nav>
 </div>
 
-@* TODO Figure out why methods aren't firing when buttons are clicked. *@
 @code{
     [Parameter, EditorRequired] public bool _isDarkMode {get; set;}
     [Parameter, EditorRequired] public EventCallback<bool> OnSwitchClicked {get; set;}
+    [CascadingParameter(Name = "navlinks")] public List<Topics> Topics {get; set;}
 
     public void SwitchClicked(bool newValue){
         OnSwitchClicked.InvokeAsync(newValue);

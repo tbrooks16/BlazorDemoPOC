@@ -3,26 +3,36 @@
 @* Required *@
 <MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode"/>
 
-
-<div class="page">
-    <div class="sidebar">
-        <NavMenu _isDarkMode="_isDarkMode" OnSwitchClicked="@handleSwitchClicked"/>
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+<CascadingValue Value="Topics" Name="navlinks">
+    <div class="page">
+        <div class="sidebar">
+            <NavMenu _isDarkMode="_isDarkMode" OnSwitchClicked="@handleSwitchClicked"/>
         </div>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+        <main>
+            <div class="top-row px-4">
+                <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+            </div>
+
+            <article class="content px-4">
+                @Body
+            </article>
+        </main>
+    </div>
+</CascadingValue>
 
 @code {
     private bool _isDarkMode = true;
     private MudThemeProvider _mudThemeProvider;
+    private List<Models.Topics> Topics = [
+        new Models.Topics(){Id = 1, Description = "Project Setup & Integrating Tailwind", Url = "/setup"},
+        new Models.Topics(){Id = 2, Description = "Dependency Injection", Url = "/di"},
+        new Models.Topics(){Id = 3, Description = "A form with client and server validation", Url = "/forms"},
+        new Models.Topics(){Id = 4, Description = "Render Modes & their caveats", Url = "/rendermodes"},
+        new Models.Topics(){Id = 5, Description = "MudBlazor Component Show off", Url = "/mudblazor"},
+        new Models.Topics(){Id = 7, Description = "Streaming", Url = "/streaming"},
+        new Models.Topics(){Id = 8, Description = "The Good the Bad and the Ugly with Blazor", Url = "/review"},
+    ];
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
