@@ -1,1 +1,33 @@
 @page "/streaming"
+@using BlazorDemoPOC.Components.UI.Blog
+@using BlazorDemoPOC.Components.UI
+@using BlazorDemoPOC.Models
+@inject IPersonRepository personRepository
+@attribute [StreamRendering]
+
+<Blog Title="Streaming Components with Blazor" TableOfContents="toc">
+    <BlogH2 Title="What is streaming" />
+    <p>Allowing a component to be streamed is very simple. Simply add an @@attribute [StreamRendering]</p>
+    <p>
+        Streaming helps deal with slow loading components. You usually want to stream data when it's large and can slow down the performance of a page. Take this table for example.
+    </p>
+    <p>
+        Read more about the rendering modes and lifecycle methods in Blazor.
+        <a class="hover:underline text-blue-400" href="https://learn.microsoft.com/en-us/aspnet/core/blazor/components/rendering?view=aspnetcore-9.0" target="_blank">Component Rendering</a>
+    </p>
+   <DataGrid @rendermode="InteractiveServer" data="people"/>
+   <p>The MudBlazor data grid is very customizable and offers a range of options that you can configure to your personal needs.</p>
+</Blog>
+
+@code {
+    public Dictionary<string, string> toc = new(){
+      {"whatisstreaming", "What is streaming?"}
+    };
+
+    List<Person>? people;
+
+    protected override async Task OnInitializedAsync(){
+       people = await personRepository.GetAllPeople();
+        await Task.Delay(500);
+    }
+}
