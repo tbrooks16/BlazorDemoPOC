@@ -1,0 +1,15 @@
+<h1 class="text-3xl font-bold mb-6">@Title</h1>
+<section>
+    <div class="text-lg">Table of Contents</div>
+    <div class="border max-w-fit p-2 border-sky-200">
+        @foreach(var kv in TableOfContents){
+            <a class="block text-slate-300 hover:text-white my-1 w-fit" href="@Route/#@kv.Key.Trim().Replace(" ", "").ToLower()">@kv.Value</a>
+        }
+    </div>
+</section>
+
+    @code{
+    [Parameter] public string? Title {get; set;}
+    [CascadingParameter(Name = "Uri")] public string? Route {get; set;}
+    [Parameter, EditorRequired] public required Dictionary<string, string> TableOfContents { get; set; }
+    }

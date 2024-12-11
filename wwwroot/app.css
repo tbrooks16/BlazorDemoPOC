@@ -1,10 +1,11 @@
 :root{
     --theme-background: var(--mud-palette-background);
     --theme-color: black;
+    font-family: Arial, Helvetica, sans-serif;
 }
 @media(prefers-color-scheme: dark ){
     :root{
-        --theme-background: rgba(9,9,11);
+        --theme-background: #282828;
         --theme-color: white;
     }
     main{

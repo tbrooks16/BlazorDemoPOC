@@ -1,0 +1,9 @@
+<h2 id="@Id" class="text-2xl hover:underline my-6"><a href="/@Route/#@Id">@Title</a></h2>
+
+@code {
+    [Parameter, EditorRequired] public string Title {get; set;} = "Provide a Title";
+    [CascadingParameter(Name = "Uri")] public string? Route {get; set;}
+    public string Id = "";
+
+    protected override void OnInitialized() => Id = Title.Trim().Replace(" ", "").ToLower();
+}

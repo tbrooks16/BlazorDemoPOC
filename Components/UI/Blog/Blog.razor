@@ -1,0 +1,17 @@
+@inject NavigationManager nav
+
+<CascadingValue Value="url" Name="Uri">
+    <div class="">
+        <BlogHeader TableOfContents="TableOfContents" Title="@Title"/>
+        <section class="[&_p]:my-4">
+            @ChildContent
+        </section>
+    </div>
+</CascadingValue>
+@code {
+    string url = "";
+    [Parameter, EditorRequired] public RenderFragment? ChildContent { get; set; }
+    [Parameter, EditorRequired] public string Title {get; set;}
+    [Parameter, EditorRequired] public Dictionary<string, string> TableOfContents { get; set; }
+    protected override void OnInitialized() => url = nav.Uri.Split("/", StringSplitOptions.RemoveEmptyEntries).Last();
+}

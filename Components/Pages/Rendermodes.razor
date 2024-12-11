@@ -1,1 +1,113 @@
 @page "/rendermodes"
+@using BlazorDemoPOC.Components.UI.Blog
+
+@* TODO Blog Component to make all pages better styled. May run into issues with serialization. *@
+<Blog TableOfContents="toc" Title="Blazor Render Modes">
+    <p class="my-4">
+        Blazor has four different render modes.<b> Blazor Server, Blazor WebAssembly, Static Server Side Rendering, and Blazor Auto.</b>
+        It's important to note that all components are pre-rendered on the server regardless of which render mode they subscribe to. We'll get into what effect that has on certain render modes later.
+    </p>
+    <BlogH2 Title="Blazor Server" />
+    <p>
+        The Blazor Server render mode is one of the two interactive render modes in Blazor.
+        Components rendered with the Blazor Server rendering mode are interactive server components. 
+        They allow the component on the client to communicate with the server through a web socket. 
+        You can inspect the payload of web socket messages by reviewing them in the network tab of the browser console.
+    </p>
+    <p>Below are two buttons, one of them has an InteractiveWebAssembly render mode and the other is SSR.</p>
+     <div class="my-2">
+        <Counter @rendermode="InteractiveServer" />
+        <Counter />
+    </div>
+    <BlogH2 Title="Blazor WebAssembly" />
+    <p>
+        The Blazor WebAssembly render mode is the second of the two interactive render modes in Blazor. 
+        WASM components live on the client but are also pre-rendered on the server.
+    </p>
+    <p>
+        A caveat to this is that wasm components cannot be pre-rendered if they need to inject services. 
+        You'll need to manually turn off pre-rendering on the component if you want to inject services. 
+        Unsubscribing from pre-rendering means you will have a layout shift if the dom element appears right away on page load.
+        Read more about this 
+        <a class="hover:underline text-blue-400 w-fit my-2" href="https://learn.microsoft.com/en-us/aspnet/core/blazor/components/render-modes?view=aspnetcore-9.0#client-side-services-fail-to-resolve-during-prerendering" target="_blank">here</a>
+    </p>
+    <p>
+        WASM components run on the client and have no direct communication to the server. It is similar to an angular app in that the client hosts the component and has no direct reference to a server.
+        If you want to communicate with a server you would need to send a http request.
+    </p>
+    <p>
+        Client components must be hosted in the client folder. Hosting "client" components in the server folder will have no effect if you set it's rendering mode to Web Assembly.
+    </p>
+    <p>
+        You cannot debug in visual studio with wasm rendered components, you can only debug Blazor Server rendered components. 
+        The code will still run however so you'll need to do logging statements similar to an angular application.
+    </p>
+    <p>Below are two buttons, one of them has an InteractiveWebAssembly render mode and the other is SSR.</p>
+    <div class="my-2">
+        <ClientCounter @rendermode="InteractiveWebAssembly" />
+        <ClientCounter />
+    </div>
+    <BlogH2 Title="Static Server Side Rendering" />
+    <p>
+        Components that are rendered SSR will have no interactivity, they are essentially static html. 
+        This is the default render mode of a Blazor Web App and you will have to opt into interactivity whenever you need it. 
+        SSR helps with SEO so it's important to only add interactivity wherever you need it.
+    </p>
+    <BlogH2 Title="Blazor Auto" />
+    <p>
+        Blazor Auto is the combination of Blazor Server and Blazor WebAssembly in one. The app will decide for you which render mode to use initially when the page runs. 
+        Then it will download the component code to then be rendered as WASM the next time the component is rendered.
+        There are some caveats and open issues with Blazor Auto so I would advise to use cautiously.
+    </p>
+    <MudAlert class="my-8" Severity="Severity.Info">
+        You may have noticed that clicking the interactive buttons as soon as the page loads has no effect. I'm not sure why this happens. 
+        If it were necessary to have components be interactive as soon as they appeared on the page, consider awaiting the resolution of all dom elements.
+    </MudAlert>
+    <BlogH2 Title="Notes" />
+    <p>
+        To pass callbacks to child components you have to go through hoops. 
+        You can't simply pass a function as a prop to a component.
+        Because functions aren't serializable they can't be passed. Props need to be serializable. 
+        You can take a prop that accepts a list of props similar to forwardRef in React. 
+        If you have a wasm component it can't take any non serializable props either. 
+    </p>
+    <MudAlert Severity="Severity.Error">Confirm This!</MudAlert>
+    <p>
+        The hierarchy of callbacks is important. The lowest ancestor of callbacks will override all other parent callbacks. If MyButton specifies an onClick it is the only onClick that will run.
+        It is important to note that the component that specifies an onClick <b>must</b> have an interactive rendering mode.
+    </p>
+    <p>
+        Additional attributes will override anything that was specified before it.
+        So if you have a class in MyButton and a class on the component that renders MyButton, the styles specified in MyButton will be erased.
+    </p>
+    <MudAlert Severity="Severity.Error">Confirm This!</MudAlert>
+    <p>
+        A peculiar issue I ran into was I have the form component that is being Web Assembly rendered.
+        This is to have client side validation, a la we don't need to hit the server to validate the user's code. 
+        So when the user has valid form data, how do I submit the data?
+    </p>
+    <p>
+        Introducing Controllers!! Duh duh duh, and just like that we are back to MVC. 
+        You can't access the db in web assembly because you're on the client and only the server has access to the database.
+        So the only way to get your form data to the server is via http. 
+    </p>
+    <p>
+        There are different recommendations on how to handle services and DI. 
+        Some recommend to create different logic depending on where the component is rendering. 
+        This would require you to duplicate logic and switch up certain aspects in the client project vs the server project. Sort of defeating the purpose of DI. 
+        <a class="hover:underline text-blue-400 w-fit my-2" href="https://www.reddit.com/r/Blazor/comments/15rih6x/blazor_web_net_8_and_di/" target="_blank">Reddit Thread</a>
+    </p>
+</Blog>
+
+@code {
+    public Dictionary<string, string> toc = new(){
+    {"#blazorserver", "Blazor Server"},    
+    {"#blazorwebAssembly", "Blazor WebAssembly"},    
+    {"#staticserversiderendering", "Static Server Side Rendering"},    
+    {"#blazorauto", "Blazor Auto"},    
+    {"#notes", "Notes"},    
+    };
+    void test(){
+        Console.WriteLine("Hello World");
+    }
+}
