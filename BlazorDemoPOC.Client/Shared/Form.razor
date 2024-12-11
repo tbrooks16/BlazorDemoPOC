@@ -3,26 +3,40 @@
 @using System.ComponentModel
 @* @using BlazorDemoPOC.Client.Validators *@
 @inject ClientPersonService service
+@inject ISnackbar Snackbar
 
 <MudPopoverProvider />
 
 @* Needed for dialogs *@
 <MudDialogProvider />
 
-@* Needed for snackbars *@
+@* Needed for snackbar *@
 <MudSnackbarProvider />
 
-<h2 class="my-6 font-semibold">Edit Form</h2>
+<h2 id="editform" class="text-2xl hover:underline my-6">Edit Form</h2>
 <EditForm Model="@editModel" OnValidSubmit="handleEditFormSubmitted">
     <DataAnnotationsValidator/>
     <MudTextField class="my-2 bg-[var(--theme-background)]" T="string" Label="First Name" Required="true" @bind-Value="editModel.FirstName" For="@(() => editModel.FirstName)"/>
     <MudTextField class="my-2 bg-[var(--theme-background)]" T="string" Label="Last Name" Required="true" @bind-Value="editModel.LastName" For="@(() => editModel.LastName)"/>
     <MudTextField class="my-2 bg-[var(--theme-background)]" T="string" Label="Username" Required="true" @bind-Value="editModel.Username" For="@(() => editModel.Username)"/>
-    <MudTextField class="my-2 bg-[var(--theme-background)]" T="string" Label="Phone Number" Required="true" @bind-Value="editModel.PhoneNumber" For="@(() => editModel.PhoneNumber)"/>
-    <MudSelect class="my-2 bg-[var(--theme-background)]" T="string" Label="Roles" MultiSelection="true"  @bind-SelectedValues="selectedRoles" Required="true" RequiredError="Please select at least one role.">
-        @foreach(var role in roles){
-            <MudSelectItem T="string" Value="@role">@role</MudSelectItem>
-        }
+    <MudTextField 
+        class="my-2 bg-[var(--theme-background)]" 
+        T="string" 
+        Label="Phone Number" 
+        Required="true" 
+        @bind-Value="editModel.PhoneNumber" 
+        For="@(() => editModel.PhoneNumber)" 
+        Mask="@(new PatternMask("000-000-0000"))"/>
+    <MudSelect class="my-2 bg-[var(--theme-background)]" 
+        T="string" 
+        Label="Roles" 
+        MultiSelection="true"  
+        @bind-SelectedValues="selectedRoles" 
+        Required="true" 
+        RequiredError="Please select at least one role.">
+            @foreach(var role in roles){
+                <MudSelectItem T="string" Value="@role">@role</MudSelectItem>
+            }
     </MudSelect>
     <MyButton disabled="@(editSubmitted)" type="submit" className="disabled:bg-gray-500 disabled:cursor-not-allowed disabled:text-black w-full" text="@editFormText" />
     <MudText Color="Color.Error">
@@ -30,13 +44,21 @@
     </MudText>
 </EditForm >
 
-<h2 class="my-6 font-semibold">MudBlazor Form</h2>
+<h2 id="mudblazorform" class="text-2xl hover:underline my-6">MudBlazor Form</h2> @* TODO Figure out Shared Class Libraries.*@
 
 <MudForm @ref="form" Model="mudModel" @bind-IsValid="@success" @bind-Errors="@errors">
     <MudTextField @bind-Value="mudModel.FirstName" class="my-2 bg-[var(--theme-background)]" T="string" Label="First Name" Required="true" RequiredError="First name is required"/>
     <MudTextField @bind-Value="mudModel.LastName" class="my-2 bg-[var(--theme-background)]" T="string" Label="Last Name" Required="true" RequiredError="Last name is required" />
     <MudTextField @bind-Value="mudModel.Username" class="my-2 bg-[var(--theme-background)]" T="string" Label="Username" Required="true" RequiredError="Username is required" />
-    <MudTextField @bind-Value="mudModel.PhoneNumber" class="my-2 bg-[var(--theme-background)]" T="string" Label="Phone Number" Required="true" RequiredError="Phone Number is required" For="@(() => mudModel.PhoneNumber)" /> @*For is to apply validation*@
+    <MudTextField 
+        @bind-Value="mudModel.PhoneNumber" 
+        class="my-2 bg-[var(--theme-background)]" 
+        T="string" 
+        Label="Phone Number" 
+        Required="true" 
+        RequiredError="Phone Number is required" 
+        For="@(() => mudModel.PhoneNumber)" 
+        Mask="@(new PatternMask("000-000-0000"))" /> @*For is to apply validation*@
     <MyButton className="disabled:bg-gray-500 disabled:cursor-not-allowed disabled:text-black" disabled="@(mudSubmitted || !success)" text="Submit MudBlazor Form" @onclick="handleMudFormSubmitted"/>
 </MudForm>
 
@@ -75,11 +97,12 @@
         editModel.Roles = roles;
         Console.WriteLine($"Roles: {editModel.Roles}");
         try{
-            @* await OnSubmit.InvokeAsync(model); *@
-            await service.PostPerson(editModel); 
+            await service.PostPerson(editModel);
+            Snackbar.Add("Successful submission", Severity.Success); 
         }catch(Exception ex){
             Console.WriteLine(ex);
             System.Diagnostics.Debug.WriteLine(ex);
+            Snackbar.Add("There was a problem with your submission.", Severity.Error); 
         }
     }
 
@@ -99,11 +122,13 @@
         {
             @* await OnSubmit.InvokeAsync(model); *@
             await service.PostPerson(mudModel);
+            Snackbar.Add("Successful submission", Severity.Success); 
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
             System.Diagnostics.Debug.WriteLine(ex);
+            Snackbar.Add("There was a problem with your submission.", Severity.Error); 
         }
     }
 }

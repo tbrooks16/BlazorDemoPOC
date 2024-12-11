@@ -1,51 +1,31 @@
 ﻿@page "/"
 @using BlazorDemoPOC.Data
 @using Microsoft.EntityFrameworkCore
-@inject IDbContextFactory<ApplicationDbContext> DbFactory
-@implements IAsyncDisposable
+@using BlazorDemoPOC.Components.UI.Blog
 
 <PageTitle>Home</PageTitle>
 
-<h1 class="text-3xl font-bold mb-3">Blazor Demo</h1>
-<p class="mb-2">This demo is to provide all the knowledge I have acquired from using Blazor. Below you'll find a list of topics.</p>
-@* TODO Turn into Card *@
-<ul>
-    @foreach(var topic in Topics){
-        <li class="list-disc hover:text-sky-400 m-1 w-fit">
-            <NavLink class="nav-link p-2" href="@topic.Url"> @topic.Description </NavLink>
-        </li>
-    }
-</ul>
-
-@* <MyButton className="text-red-700" clickCallback="doSomething" @rendermode="InteractiveServer"/> *@
-@* <ul class="px-2">
-    @foreach(var test in tests)
-    {
-        <li class="list-decimal">@test.Username</li>
-    }
-</ul> *@
+<Blog Title="Blazor Demo" TableOfContents="toc">
+    <p>This demo is to provide all the knowledge I have acquired from using Blazor. Below you'll find a list of topics.</p>
+    <p>
+        I go over how to setup the project for Interactive Server and Interactive WebAssembly, 
+        a brief demo of how dependency injection works,
+        setting up a Form one with WASM and the other with Interactive Server, demonstrating the capabilities of server and client side validation,
+        an explanation of how the render modes work in Blazor and their caveats,
+        A simple demo of what is possible using the MudBlazor component library,
+        and my personal opinion on MudBlazor. 
+    </p>
+</Blog>
 
 @code{
-    #nullable disable
-    private ApplicationDbContext context = default!;
-    private List<Models.Test> tests = [];
+    public Dictionary<string, string> toc = new(){};
     private List<Models.Topics> Topics = [
-        new Models.Topics(){Id = 6, Description = "Project Setup & Integrating Tailwind", Url = "/setup"},
-        new Models.Topics(){Id = 6, Description = "Dependency Injection", Url = "/di"},
-        new Models.Topics(){Id = 1, Description = "A form with client and server validation", Url = "/forms"},
-        new Models.Topics(){Id = 2, Description = "Render Modes & their caveats", Url = "/rendermodes"},
-        new Models.Topics(){Id = 3, Description = "MudBlazor Component Show off", Url = "/mudblazor"},
-        new Models.Topics(){Id = 4, Description = "DataTables using Mudblazor", Url = "/table"},
-        new Models.Topics(){Id = 5, Description = "Streaming", Url = "/streaming"},
-        new Models.Topics(){Id = 6, Description = "The Good the Bad and the Ugly with Blazor", Url = "/review"},
+        new Models.Topics(){Id = 1, Description = "Project Setup & Integrating Tailwind", Url = "/setup"},
+        new Models.Topics(){Id = 2, Description = "Dependency Injection", Url = "/di"},
+        new Models.Topics(){Id = 3, Description = "A form with client and server validation", Url = "/forms"},
+        new Models.Topics(){Id = 4, Description = "Render Modes & their caveats", Url = "/rendermodes"},
+        new Models.Topics(){Id = 5, Description = "MudBlazor Component Show off", Url = "/mudblazor"},
+        new Models.Topics(){Id = 7, Description = "Streaming", Url = "/streaming"},
+        new Models.Topics(){Id = 8, Description = "The Good the Bad and the Ugly with Blazor", Url = "/review"},
     ];
-    public async ValueTask DisposeAsync(){
-        await context.DisposeAsync();
-    }
-
-    protected override void OnInitialized(){
-        context = DbFactory.CreateDbContext();
-        tests = context.Test.ToList();
-
-    }
 }   

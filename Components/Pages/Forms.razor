@@ -1,27 +1,32 @@
 @page "/forms"
 @using BlazorDemoPOC.Models
+@using BlazorDemoPOC.Components.UI.Blog
 @inject IPersonRepository personRepository
 
-<h1 class="text-3xl font-bold">MudBlazor Form</h1>
-<p class="my-4">This is an example of a client-side (WASM) form with both client and server-side validation using MudBlazor's form component and Blazor's EditForm component.</p>
-<p class="my-4">
-    Each form has automatic validaton on all fields except phone number. 
-    Phone number has a custom validation schema on it. I am using a regex to validate but there are many other ways to do validation on an entry.
-</p>
+<Blog Title="MudBlazor Form" TableOfContents="toc">
+    <p>This is an example of a client-side (WASM) form with both client and server-side validation using MudBlazor's form component and Blazor's EditForm component.</p>
+    <p>
+        Client Side Validation in the EditForm component is achieved by using the DataAnnotationsValidator Component. 
+        This component will process the client validation in the form and 
+        when the form passes client validation and the user clicks the submit button, 
+        OnValidSubmit will be executed.
+    </p>
+    <p>
+        Each form has automatic validation on all fields except phone number. 
+        Phone number has a custom validation schema on it. I am using a regex to validate but there are many other ways to do validation on an entry.
+    </p>
+    <p>Links</p>
+    <a class="block hover:underline text-blue-400 w-fit my-2" target="_blank" href="https://mudblazor.com/components/form#editform-support">MudBlazor Form Component</a>
+    <a class="block hover:underline text-blue-400 w-fit my-2" target="_blank" href="https://learn.microsoft.com/en-us/aspnet/core/blazor/forms/?view=aspnetcore-3.1">Blazor Form </a>
+    <Form @rendermode="new InteractiveWebAssemblyRenderMode(prerender: false)" OnSubmit="createPerson"/> 
+</Blog>
 
-<p class="my-4">Links</p>
-<a class="block hover:underline text-blue-400 w-fit my-2" target="_blank" href="https://mudblazor.com/components/form#editform-support">MudBlazor Form Component</a>
-<a class="block hover:underline text-blue-400 w-fit my-2" target="_blank" href="https://learn.microsoft.com/en-us/aspnet/core/blazor/forms/?view=aspnetcore-3.1">Blazor Form </a>
-
-<Form @rendermode="new InteractiveWebAssemblyRenderMode(prerender: false)" OnSubmit="createPerson"/> @* Need to disable prerendering when injecting services.*@
-
-@* @foreach(var person in people){
-    <span>@person.Username</span>
-    <span>@person.PhoneNumber</span>
-    <br/>
-} *@
 
 @code {
+    public Dictionary<string, string> toc = new(){
+      {"editform", "Edit Form"},
+      {"mudblazorform", "MudBlazor Form"},
+    };
     protected override async Task OnInitializedAsync(){
        await getPeople();
     }

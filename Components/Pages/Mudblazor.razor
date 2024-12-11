@@ -1,1 +1,19 @@
 @page "/mudblazor"
+@using BlazorDemoPOC.Components.UI.Blog
+
+<Blog Title="MudBlazor" TableOfContents="toc">
+    <p class="my-4">
+        I use MudBlazor as the material for Blazor projects. If you set up your interactivity on the global level, you include the providers (MudPopoverProvider, MudDialogProvider, MudSnackbarProvider) on the MainLayout page. 
+    </p>
+    <p>
+        If you don't you must include it on each page that you use MudBlazor components. MudBlazor components must have an interactive render mode, without it the components will throw errors or not render correctly. 
+    </p>
+</Blog>
+
+
+<p class="my-4">Links</p>
+<a class="block hover:underline text-blue-400 w-fit my-2" href="https://mudblazor.com/getting-started/installation#online-playground">MudBlazor Components</a>
+
+@code {
+    public Dictionary<string, string> toc = new(){};
+}

@@ -2,6 +2,9 @@
 <section>
     <div class="text-lg">Table of Contents</div>
     <div class="border max-w-fit p-2 border-sky-200">
+        @if(TableOfContents.Count == 0){
+            <div class="text-slate-300">Nothing to see here</div>
+        }
         @foreach(var kv in TableOfContents){
             <a class="block text-slate-300 hover:text-white my-1 w-fit" href="@Route/#@kv.Key.Trim().Replace(" ", "").ToLower()">@kv.Value</a>
         }
